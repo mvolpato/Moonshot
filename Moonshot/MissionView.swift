@@ -15,6 +15,7 @@ struct MissionView: View {
 
     let mission: Mission
     let astronauts: [CrewMember]
+    let missions: [Mission]
 
     var body: some View {
         GeometryReader { geometry in
@@ -26,11 +27,15 @@ struct MissionView: View {
                         .frame(maxWidth: geometry.size.width * 0.7)
                         .padding(.top)
 
+                    Text(self.mission.formattedLaunchDate)
+                        .font(.subheadline)
+                        .padding()
+
                     Text(self.mission.description)
                         .padding()
 
                     ForEach(self.astronauts, id: \.role) { crewMember in
-                        NavigationLink(destination: AstronautView(astronaut: crewMember.astronaut)) {
+                        NavigationLink(destination: AstronautView(astronaut: crewMember.astronaut, missions: missions)) {
                             HStack {
                                 Image(crewMember.astronaut.id)
                                     .resizable()
@@ -58,7 +63,7 @@ struct MissionView: View {
         .navigationBarTitle(Text(mission.displayName), displayMode: .inline)
     }
 
-    init(mission: Mission, astronauts: [Astronaut]) {
+    init(mission: Mission, astronauts: [Astronaut], missions: [Mission]) {
         self.mission = mission
 
         var matches = [CrewMember]()
@@ -72,6 +77,7 @@ struct MissionView: View {
         }
 
         self.astronauts = matches
+        self.missions = missions
     }
 }
 
@@ -80,6 +86,6 @@ struct MissionView_Previews: PreviewProvider {
     static let astronauts: [Astronaut] = Bundle.main.decode("astronauts.json")
 
     static var previews: some View {
-        MissionView(mission: missions[0], astronauts: astronauts)
+        MissionView(mission: missions[1], astronauts: astronauts, missions: missions)
     }
 }
